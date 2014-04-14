@@ -110,6 +110,19 @@
 				</li>
 				<?php } ?>
 
+				<?php if(json_decode(Session::get('usergroupdata')->grn)->all=='true'){ ?>
+				<li class="menuclass" menuvalue="grn">
+					<a href="{{ URL::to('grn') }}">
+					<i class="fa fa-edit"></i>
+					<span class="title">
+						GRN
+					</span>
+					<span class="selected">
+					</span>
+					</a>
+				</li>
+				<?php } ?>
+
 				<!-- 
 				<li class="menuclass" menuvalue="">
 					<a href="{{ URL::route('departments.index') }}">
