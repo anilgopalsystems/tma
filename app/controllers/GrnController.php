@@ -118,9 +118,10 @@ class GrnController extends \BaseController {
 
 		}*/
 	
-	for ($i=0; $i < count(Input::get('asset_serial')) ; $i++) {
-		$temp = Input::get('asset_serial');
-		echo $temp[$i];
+	for ($i=0; $i < count(Input::get('item_name')) ; $i++) {
+		$item_name = Input::get('item_name');
+		$mfg_code = Input::get('mfg_code');
+		echo $item_name[$i].' '.$mfg_code[$i].'<br>';
 	}
 	
 

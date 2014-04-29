@@ -46,7 +46,7 @@
 						</div>
 						<div class="modal-body">
 							 
-<div class="row">
+				<div class="row">
 					<div class="col-md-12">
 								<div class="portlet box blue">
 									<div class="portlet-title">
@@ -65,9 +65,9 @@
 										<!-- <form action="#" class="form-horizontal"> -->
 											<div class="form-body">
 												<h3 class="form-section" style="display:flex">Asset Details &nbsp;&nbsp;
-																<div class="spinner" style="margin-top: -3px; display:none">
-																	<img src={{ asset("assets/img/loading-spinner-grey.gif") }} alt=""/>
-																</div></h3>
+													<div class="spinner" style="margin-top: -3px; display:none">
+														<img src={{ asset("assets/img/loading-spinner-grey.gif") }} alt=""/>
+													</div></h3>
 													<div class="table-responsive">
 														<table class="table table-bordered table-hover">
 														<thead>
@@ -83,6 +83,9 @@
 															</th>
 															<th>
 																Serial
+															</th>
+															<th>
+																Print
 															</th>
 														</tr>
 														</thead>
@@ -110,7 +113,7 @@
 													<div class="row">
 														<div class="col-md-6">
 															<div class="col-md-offset-10 col-md-9">
-																<button type="button" onclick="storeassetinfo()" class="btn blue">Submit</button>
+																<button type="button" onclick="storeassetinfo(this)" class="btn blue">Submit</button>
 																<!-- <button type="button" class="btn default">Cancel</button> -->
 															</div>
 														</div>
@@ -502,7 +505,8 @@
 														<tbody class="addfeildhere">						
 														<tr>
 															<td>
-																<input type="text" name="item_name[]" value="" id="item_name" class="form-control">																
+																<input type="text" name="item_name[]" value="" id="item_name" class="form-control">
+																<input type="hidden" name="istrackable" value="false"><input type="hidden"  name="fc" value="fc0">
 															</td>
 															<td>
 																<input type="text" name="mfg_code[]" id="" value="" id="mfg_code" class="form-control">
@@ -629,7 +633,7 @@
     		if(data.value){
     			$("input[name='currentboxvalue']").val($(this).attr('id'));
     			var elem = $(this).closest('tr');
-    			$("input[name='currentitemname']").val(elem.find("#item_name").val());
+    			//$("input[name='currentitemname']").val(elem.find("#item_name").val());
     			if(elem.find("#item_name").val()==''||elem.find("#quantity").val()==''||elem.find("#item_cost").val()==''){
     				alert("Please Enter Item Name, Item cost, Quantity");
     				var curboxval = $("input[name='currentboxvalue']").val();
@@ -646,7 +650,7 @@
 		   						obj = JSON.parse(msg);
     						
     						for (var i = 1; i <= trcount; i++) {
-    							$('tbody.assetfeilds').append('<tr><td><div class="sno">'+i+'</div></td><td><input type="text" name="asset_name[]" value="'+elem.find('#item_name').val()+'" id="asset_name" class="form-control" readonly="readonly"></td><td><input type="text" name="asset_key[]" id="" value="'+obj[i]+'" id="asset_key" class="form-control" readonly="readonly"></td><td><input type="text" name="asset_serial[]" value="" id="asset_serial" class="form-control"></td></tr>').slideDown("slow");	
+    							$('tbody.assetfeilds').append('<tr><td><div class="sno">'+i+'</div></td><td><input type="text" name="asset_name[]" value="'+elem.find('#item_name').val()+'" id="asset_name" class="form-control" readonly="readonly"></td><td><input type="text" name="asset_key[]" value="'+obj[i]+'" id="asset_key" class="form-control" readonly="readonly"></td><td><input type="text" name="asset_serial[]" value="" id="asset_serial" class="form-control"></td><td><button type="button" onclick="printbarcode(this)" class="btn blue">Print</button></td></tr>').slideDown("slow");	
     						}
     						$('.spinner').css('display','none');
     						});
@@ -723,7 +727,7 @@
 	var feildcount = 0;	
 	function addfeild(){
 		feildcount++;
-		$("tbody.addfeildhere").append('<tr><td><input type="text" name="item_name[]" id="item_name" value="" class="form-control"></td><td><input type="text" name="mfg_code[]" value="" id="mfg_code" class="form-control"></td><td><input type="text" name="manufacturer[]" id="manufacturer" value="" class="form-control"></td><td><input type="text" name="item_cost[]" value="" id="item_cost" class="form-control"></td><td><input type="text" name="quantity[]" value="" id="quantity" class="form-control"></td><td><div class="make-switch switch-small" id="trackable'+feildcount+'" data-on-label="Yes" data-off-label="No"><input type="checkbox" class="toggle"/></div></td><td><i class="fa fa-minus-circle" style="font-size: 23px;color: #4D90FE;cursor:pointer;margin-top:8px" onclick="deletefeild(this)"></i></td></tr>');
+		$("tbody.addfeildhere").append('<tr><td><input type="text" name="item_name[]" id="item_name" value="" class="form-control"><input type="hidden" name="istrackable" value="false"><input type="hidden" name="fc" value="fc'+feildcount+'"></td><td><input type="text" name="mfg_code[]" value="" id="mfg_code" class="form-control"></td><td><input type="text" name="manufacturer[]" id="manufacturer" value="" class="form-control"></td><td><input type="text" name="item_cost[]" value="" id="item_cost" class="form-control"></td><td><input type="text" name="quantity[]" value="" id="quantity" class="form-control"></td><td><div class="make-switch switch-small" id="trackable'+feildcount+'" data-on-label="Yes" data-off-label="No"><input type="checkbox" class="toggle"/></div></td><td><i class="fa fa-minus-circle" style="font-size: 23px;color: #4D90FE;cursor:pointer;margin-top:8px" onclick="deletefeild(this)"></i></td></tr>');
 		$("#trackable"+feildcount).bootstrapSwitch();
 
 		$('#trackable'+feildcount).on('switch-change', function (e, data) {
@@ -801,17 +805,56 @@
     	$.cookie(assetkey)--;  	
 	}*/
 
-	function storeassetinfo(){
-		var curitemname = $("input[name='currentitemname']").val();
-		var assetdata = {};
+	function storeassetinfo(obj){
+		var curitemname = $("input[name='currentboxvalue']").val();
+		$("#"+curboxval).bootstrapSwitch('setState', true);
+		console.log($("#"+curboxval).closest("tr").find("input[name='']"));
+
+
+
+
+
+		/*var assetdata = {};
 		assetdata.curitemname = [];
 		var i = 0;
-		/*$("input[name^='asset_serial']").each(function() {*/
+		$("input[name^='asset_serial']").each(function() {
 			assetdata.curitemname[0] = 'some';
-/*			i++;
-		});*/
-		console.log(assetdata);
-		//$(".hiddeninputs").append("<inpu")
+			i++;
+		});
+		console.log(assetdata);*/
+	}
+
+	/*function getBaseURL() {
+	   return location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + "/";
+	}*/
+
+	function printbarcode(obj){
+	    var tmpdata = $(obj).closest('tr');
+	    var asset_key = tmpdata.find('#asset_key').val();
+	    var asset_name = tmpdata.find('#asset_name').val();
+	    //var baseurl = getBaseURL();
+	    $.ajax({
+	      type: "POST",
+	      url: "http://localhost/l4/public/barcodeprint/index.php",
+	      data: { asset_name: asset_name, asset_key: asset_key }
+	    }).done(function(){
+	      
+	      $.ajax({
+	        type: "POST",
+	        url: "http://127.0.0.1:88/index.php",
+	      })/*.fail(function(){
+	          //alert("failed <a href='/barcodeprint/download.php'>Please download</a>");
+	          $.pnotify({
+	              title: 'Barcode Print',
+	              text: 'Download and Install <a style="color:rgb(224, 34, 34);" href="/barcodeprint/download.php">TMAprint</a> plugin',
+	              type: 'info',
+	              hide: false
+	          });
+
+	        });*/
+
+	    });
+		//console.log(asset_name)
 	}
 	</script>
 @stop
