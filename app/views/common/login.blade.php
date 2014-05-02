@@ -44,7 +44,7 @@
 <div class="content">
   <!-- BEGIN LOGIN FORM -->
   {{ Form::open(array('url'=>'login/signin','method'=>'post', 'class'=>'form-vertical login-form')) }}
-    <h3 class="form-title">Logi to your account</h3>
+    <h3 class="form-title">Login to your account</h3>
       @if(Session::has('loginstatus'))
         <span style="color:#b94a48;font-size: 15px;" class="help-block">{{ Session::get('loginstatus') }}</span>        
       @endif
